@@ -1,0 +1,49 @@
+# Node.js modules
+client/node_modules/
+server/node_modules/
+
+# Build and production files
+client/build/
+client/dist/
+server/dist/
+
+# Logs
+client/npm-debug.log*
+server/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+server/yarn-debug.log*
+server/yarn-error.log*
+
+# Environment variables
+client/.env
+server/.env
+
+# Cache files
+client/.next/
+server/.next/
+client/.cache/
+server/.cache/
+
+# IDE and editor-specific files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp
+*.temp
+
+# Coverage reports
+client/coverage/
+server/coverage/
+
+# Miscellaneous
+client/.eslintcache
+server/.eslintcache
