@@ -5,15 +5,13 @@ module.exports.subScribe = async (req, res) => {
 
     const expiresIn = [7, 30, 210, 395];
     const plans = ['Free Trial', '1 Month', '6 Months', '1 Year'];
+
     
     try {
         
         if(req.body.subscriptionID==0){
             const user = await User.findOne({ email: req.body.email });
-            if (!user) {
-                return res.status(404).json({ message: "User not found" });
-            }
-            
+                        
             const userId = user._id.toString();
             const plan   = await Subscription.countDocuments({ 
                 plan: plans[req.body.subscriptionID], 
