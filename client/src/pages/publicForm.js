@@ -22,7 +22,7 @@ const PublicForm = (props) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // alert('Form Submitted!');
-        Axios.post(/api/users', formData).then(res => {
+        Axios.post('/api/users', formData).then(res => {
                 setMessage(res.data.message)
                 setIsError(false)
                 setShowMessage(true)
