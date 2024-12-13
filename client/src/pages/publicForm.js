@@ -8,7 +8,13 @@ import { useLocation } from 'react-router-dom';
 import { Axios } from '../constant';
 
 const PublicForm = (props) => {
-    const [formData, setFormData] = useState([]);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        tradingViewID: '',
+        whatsAppNumber: '',
+        subscriptionID: '',
+    });
     
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
