@@ -2,10 +2,12 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "api/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": ""node api/index.js",
+    "dev": "nodemon api/index.js",
+    "build": "echo 'No build step needed'",
   },
   "keywords": [],
   "author": "",
@@ -22,7 +24,8 @@
     "mongodb": "^6.11.0",
     "mongoose": "^8.8.3",
     "node-cron": "^3.0.3",
-    "nodemailer": "^6.9.16"
+    "nodemailer": "^6.9.16",
+    "serverless-http": "^3.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
