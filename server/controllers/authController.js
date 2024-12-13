@@ -8,22 +8,6 @@ module.exports.subScribe = async (req, res) => {
 
     
     try {
-        
-        if(req.body.subscriptionID==0){
-            const user = await User.findOne({ email: req.body.email });
-                        
-            const userId = user._id.toString();
-            const plan   = await Subscription.countDocuments({ 
-                plan: plans[req.body.subscriptionID], 
-                userId: userId 
-            });
-            
-            if (plan > 0) {
-                return res.status(412).json({ message: `You have already accepted the Free Trial` });
-            } else {
-                console.log('error', plan);
-            }
-        }
 
         const isActiveUser = await findActiveUsers(req.body.tradingViewID);
 
