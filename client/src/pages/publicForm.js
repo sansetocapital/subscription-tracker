@@ -5,6 +5,7 @@ import axios from 'axios';
 import Layout from '../components/layout';
 import AutoDismissAlert from '../components/AutoDismissAlert';
 import { useLocation } from 'react-router-dom';
+import { Axios } from '../constant';
 
 const PublicForm = (props) => {
     const [formData, setFormData] = useState([]);
@@ -21,7 +22,7 @@ const PublicForm = (props) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // alert('Form Submitted!');
-        axios.post('http://localhost:9000/api/users', formData).then(res => {
+        Axios.post(/api/users', formData).then(res => {
                 setMessage(res.data.message)
                 setIsError(false)
                 setShowMessage(true)

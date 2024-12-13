@@ -65,7 +65,7 @@ const AdminPanel = () => {
     }, [subscriptions])
 
     const getAllSubscription = () => {
-        axios.get('http://localhost:9000/api/admin/getAllSubscription').then(res => {
+        Axios.get('/api/admin/getAllSubscription').then(res => {
             return setSubscriptions(res.data);
 
         });
@@ -108,7 +108,7 @@ const AdminPanel = () => {
 
     const handleSaveChanges = async () => {
         try {
-            await axios.post('http://localhost:9000/api/admin/manageSubscription', selectedSubscription).then(res => {
+            await Axios.post('/api/admin/manageSubscription', selectedSubscription).then(res => {
                 console.log(res.data)
                 setSubscriptions(res.data.subscription);
                 getAllSubscription()

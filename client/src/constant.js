@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export const Axios = axios.create({
-    baseURL: 'http://localhost:9000/'
+    baseURL: 'https://subscription-tracker-h4we.onrender.com'
   });
