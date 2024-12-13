@@ -26,7 +26,7 @@ const PublicForm = (props) => {
         setIsLoading(true);
     
         try {
-            await Axios.post('/api/users', formData);
+            const res = await Axios.post('/api/users', formData);
             setMessage(res.data.message);
             setIsError(false);
         } catch (err) {
