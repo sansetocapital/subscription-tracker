@@ -4,58 +4,111 @@ import {
     Toolbar,
     IconButton,
     Typography,
-    Button
+    Button,
+    Menu,
+    MenuItem,
+    useMediaQuery,
+    Box,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 
 
 const Layout = (props) => {
-    const {role} = props;
+    const { role } = props;
     const navigate = useNavigate();
-
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [anchorEl, setANchorEI] = useState(null);
 
     const gotoSubscriptionPage = (role) => {
-        if(role==='admin')
-            navigate('/admin/subscription'); // Navigate to the Services page
-        else 
-            navigate('/user/subscription'); // Navigate to the Services page
+        if (role === 'admin')
+            navigate('/admin/subscription'); 
+        else
+            navigate('/user/subscription'); 
     };
-    const gotoAdminPanel = () =>{
+    const gotoAdminPanel = () => {
         navigate('/admin');
+    }
+
+    const handleMenuOpen = (event) => {
+        setANchorEI(event.currentTarget)
+    }
+    const handleMenuClose = () => {
+        setANchorEI(null);
     }
     return (
         <AppBar position="static" sx={{ backgroundColor: '#333' }}>
             <Toolbar>
                 {/* Menu Button (useful for mobile views) */}
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 2 }}
-                >
-                    {/* <MenuIcon /> */}
-                </IconButton>
-
+                {isMobile && (
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={handleMenuOpen}
+                        sx={{ mr: 2 }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                )}
                 {/* Brand Name or Logo */}
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     Subscription Management Portal
                 </Typography>
-                {
-                    role=="admin" ? 
+                {!isMobile && (
                     <>
-                        <Button color="inherit" onClick={gotoAdminPanel}>Admin Panel</Button>
-                        <Button color="inherit"  onClick={()=>gotoSubscriptionPage('admin')}>Subscription</Button>
-                    </> : 
-                    <>
-                        <Button color="inherit">Home</Button>
-                        <Button color="inherit">About</Button>
-                        <Button color="inherit"  onClick={()=>gotoSubscriptionPage('user')}>Subscription</Button>
-                        <Button color="inherit">Services</Button>
-                        <Button color="inherit">Contact</Button>
+                        {role === 'admin' ? (
+                            <>
+                                <Button color="inherit" onClick={gotoAdminPanel}>
+                                    Admin Panel
+                                </Button>
+                                <Button color="inherit" onClick={() => gotoSubscriptionPage('admin')}>
+                                    Subscription
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button color="inherit">Home</Button>
+                                <Button color="inherit">About</Button>
+                                <Button color="inherit" onClick={() => gotoSubscriptionPage('user')}>
+                                    Subscription
+                                </Button>
+                                <Button color="inherit">Services</Button>
+                                <Button color="inherit">Contact</Button>
+                            </>
+                        )}
                     </>
-                }
-                
+                )}
+
+                {isMobile && (
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        keepMounted
+                    >
+                        {role === 'admin' ? (
+                            <>
+                                <MenuItem onClick={gotoAdminPanel}>Admin Panel</MenuItem>
+                                <MenuItem onClick={() => gotoSubscriptionPage('admin')}>
+                                    Subscription
+                                </MenuItem>
+                            </>
+                        ) : (
+                            <>
+                                <MenuItem>Home</MenuItem>
+                                <MenuItem>About</MenuItem>
+                                <MenuItem onClick={() => gotoSubscriptionPage('user')}>
+                                    Subscription
+                                </MenuItem>
+                                <MenuItem>Services</MenuItem>
+                                <MenuItem>Contact</MenuItem>
+                            </>
+                        )}
+                    </Menu>
+                )}
+
             </Toolbar>
         </AppBar>
     )
