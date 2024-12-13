@@ -14,27 +14,32 @@ const PublicForm = (props) => {
     const [isError, setIsError] = useState(false);
     const [showMessage, setShowMessage] = useState(false);
     const [subscription, setSubscription] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const {role} = props;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // alert('Form Submitted!');
-        Axios.post('/api/users', formData).then(res => {
-                setMessage(res.data.message)
-                setIsError(false)
-                setShowMessage(true)
-        }).catch(err=>{
-            if(err.response){
-                setMessage(err.response.data.message)
-                setIsError(true)
-                setShowMessage(true)
+        setIsLoading(true);
+    
+        try {
+            await Axios.post('/api/users', formData);
+            setMessage(res.data.message);
+            setIsError(false);
+        } catch (err) {
+            if (err.response) {
+                setMessage(err.response.data.message);
+                setIsError(true);
             }
-        })
-        
+        } finally {
+            setIsLoading(false); // Always reset loading state.
+            setShowMessage(true);
+        }
     };
+
     const displayMessage = (isError, message) =>{
         if(isError) {
             setIsError(true)
@@ -119,8 +124,15 @@ const PublicForm = (props) => {
                             </Select>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button type="submit" variant="contained" color="primary" fullWidth sx={{height:'60px'}}>
-                                Submit
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                sx={{ height: '60px' }}
+                                disabled={isLoading} // Disable while loading
+                            >
+                                {isLoading ? "Submitting..." : "Submit"}
                             </Button>
                         </Grid>
                         
