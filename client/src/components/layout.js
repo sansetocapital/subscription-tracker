@@ -57,7 +57,7 @@ const Layout = (props) => {
                 )}
                 {/* Brand Name or Logo */}
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    Subscription Management Portal
+                    SANSETO Subscription Management Portal
                 </Typography>
                 {!isMobile && (
                     <>

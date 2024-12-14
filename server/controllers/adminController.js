@@ -116,12 +116,10 @@ module.exports.getGroupedSubscriptions = async (req, res) => {
 
 module.exports.manageSubscription = async (req, res) => {
     const { _id, paymentAmount, paymentMode, accessStatus, plan, startDate, endDate } = req.body;
-    console.log(req.body, '....body')
     try {
-        console
         const updatedSubscription = await Subscription.findOneAndUpdate(
             { _id: _id },
-            { paymentAmount, paymentMode, accessStatus, plan },
+            { paymentAmount, paymentMode, accessStatus, plan, startDate, endDate },
             { new: true }
         );
         if (!updatedSubscription) {
@@ -129,7 +127,6 @@ module.exports.manageSubscription = async (req, res) => {
         }
         if(accessStatus=="Granted") {
             const statusCode = await emailService.sendEmail(req.body.userDetails.email, process.env.MESSAGE_SENDER, req.body.userDetails.name, plan, startDate, endDate)
-            console.log('statusCode: ', statusCode)
             res.status(statusCode).json({
                 message: statusCode==200 ? 'Success' : 'Invalid',
             })
