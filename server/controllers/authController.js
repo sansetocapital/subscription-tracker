@@ -5,26 +5,28 @@ module.exports.subScribe = async (req, res) => {
 
     const expiresIn = [7, 30, 210, 395];
     const plans = ['Free Trial', '1 Month', '6 Months', '1 Year'];
-
+    console.log(req.body, '....viewID')
     try {
         const isActiveUser = await findActiveUsers(req.body.tradingViewID);
 
         if(isActiveUser) {
-            res.status(412).json({message:`TradingView ID=${req.body.tradingViewID} is existed`})
+            res.status(412).json({message:`TradingView ID ${req.body.tradingViewID} already exists!`})
             return
         }
         else {
-            // const user = await User.findOne({email: req.body.email});
             const userData = await new User(req.body);
             const subscription = await new Subscription({
                 userId: userData._id
             })
             const currentDate = new Date();
-            subscription.endDate = new Date(currentDate.getTime() + expiresIn[req.body.subscriptionID] * 24 * 60 * 60 * 1000); 
+            const endDate = new Date(currentDate.getTime() + expiresIn[req.body.subscriptionID] * 24 * 60 * 60 * 1000);
+            subscription.endDate = endDate;
             subscription.plan = plans[req.body.subscriptionID];
-            subscription.save()
+            const isExpired = (endDate - currentDate) < 0;
+            subscription.isExpired = isExpired;
+            subscription.save();
             userData.save();
-            res.status(200).json({message: 'Success!'})
+            res.status(200).json({message: 'Thanks for your subscription request!'});
         }
         
     } catch (err) {

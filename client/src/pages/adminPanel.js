@@ -84,45 +84,38 @@ const AdminPanel = () => {
         }
     }
     const handleRowClick = (subscription) => {
-        setSelectedSubscription(subscription); 
-        setOpenModal(true); 
+        setSelectedSubscription(subscription);
+        setOpenModal(true);
     };
 
     const handleSubRowClick = (subscription) => {
         console.log(subscription);
-        setSelectedSubscription(subscription); 
-        setOpenModal(true); 
+        setSelectedSubscription(subscription);
+        setOpenModal(true);
     };
     const handleCloseModal = () => {
         setOpenModal(false);
-        setSelectedSubscription(null); 
+        setSelectedSubscription(null);
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setSelectedSubscription((prev) => ({
             ...prev,
-            [name]: value, 
+            [name]: value,
         }));
     };
 
     const handleSaveChanges = async () => {
         try {
             await Axios.post('/api/admin/manageSubscription', selectedSubscription).then(res => {
-                console.log(res.data)
-                setSubscriptions(res.data.subscription);
                 getAllSubscription()
                 setMessage(res.data.message)
                 setIsError(false)
                 setOpenModal(false)
                 setShowMessage(true)
-                // setSubscriptions((prev) =>
-                //     prev.map((sub) =>
-                //         sub.id === selectedSubscription.id ? selectedSubscription : sub
-                //     )
-                // );
             })
-           
+
         } catch (error) {
             setIsError(true)
             if (error.response) {
@@ -143,8 +136,7 @@ const AdminPanel = () => {
     const getDateDifference = (startDate, endDate) => {
         const start = new Date(startDate);
         const end = new Date(endDate);
-        const differenceInMs = end - start;
-
+        const differenceInMs = end - new Date(Date.now());
         const days = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
         return differenceInMs > 0 ? `${days} Days` : 'expired';
     };
@@ -172,7 +164,8 @@ const AdminPanel = () => {
                             This is a success Alert inside a Snackbar!
                         </Alert>
                     </Snackbar>
-                    <Grid item sm={10} md={10} xs={10}>
+
+                    <Grid item sm={10} md={5} xs={10}>
                         <TableContainer component={Paper} sx={{ border: '1px solid black' }}>
                             <Table >
                                 <TableBody>
@@ -192,188 +185,193 @@ const AdminPanel = () => {
                             </Table>
                         </TableContainer>
                     </Grid>
-                    <Grid item sm={10} md={10} xs={10} sx={{ marginTop: '20px' }}>
-                        <TableContainer component={Paper}>
-                            <Table sx={{ border: '1px solid black' }}>
-                                <TableHead sx={{ backgroundColor: 'rgb(0, 176, 240)', border: '1px solid black' }}>
-                                    <TableRow >
-                                        <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>S.No</b></TableCell>
-                                        <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>User Name</b></TableCell>
-                                        <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Email ID</b></TableCell>
-                                        <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>WhatsApp Number</b></TableCell>
-                                        <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>TradingView ID</b></TableCell>
-                                        <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Subscription Status</b></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody >
-                                    {subscriptions && subscriptions?.length > 0 ? (
-                                        subscriptions?.map((sub, index) => (
-                                            <>
-                                                <TableRow key={index} sx={{ background: 'rgb(247,202, 172)', border: '1px solid black' }}>
-                                                    <TableCell sx={{ border: '1px solid black' }} width="7%">{index + 1}</TableCell>
-                                                    <TableCell sx={{ border: '1px solid black' }} width="24%">{sub.name}</TableCell>
-                                                    <TableCell sx={{ border: '1px solid black' }} width="24%">
-                                                        <a href={''} style={{ textDecoration: 'underline' }}>{sub.email}</a>
-                                                    </TableCell>
-                                                    <TableCell sx={{ border: '1px solid black' }} width="24%">{sub.whatsAppNumber}</TableCell>
-                                                    <TableCell sx={{ border: '1px solid black' }} width="14%">{sub.tradingViewID}</TableCell>
-                                                    <TableCell sx={{ border: '1px solid black' }} width="7%">{sub.active ? 'Active' : 'Expired'}</TableCell>
-
-                                                </TableRow>
-
-                                                <TableRow sx={{ border: '1px solid black' }}>
-                                                    <TableCell ></TableCell>
-                                                    <TableCell sx={{ border: '1px solid black', padding: '0px' }} colSpan={4}>
-                                                        <Table >
-                                                            <TableHead  >
-                                                                <TableRow  >
-                                                                    <TableCell width="14%" >Subscription Start Date</TableCell>
-                                                                    <TableCell width="14%">Subscription End Date</TableCell>
-                                                                    <TableCell width="14%">Plan</TableCell>
-                                                                    <TableCell width="14%">Payment Mode</TableCell>
-                                                                    <TableCell width="14%">Price(USD/INR)</TableCell>
-                                                                    <TableCell width="14%">Comments</TableCell>
-                                                                    <TableCell width="16%">Sbuscription Status</TableCell>
-                                                                </TableRow>
-                                                            </TableHead>
-                                                            <TableBody>
-                                                                {
-                                                                    sub?.subscriptions?.map((item, index) => (
-                                                                        <TableRow key={index} onClick={() => handleSubRowClick(item)} sx={{ cursor: 'pointer' }} >
-                                                                            <TableCell >{new Date(item.startDate).toLocaleDateString()}</TableCell>
-                                                                            <TableCell >{format(parseISO(item.endDate), 'dd-MM-yyyy')}</TableCell>
-                                                                            <TableCell >{item.plan}</TableCell>
-                                                                            <TableCell >{item.paymentMode}</TableCell>
-                                                                            <TableCell >{item.paymentAmount}</TableCell>
-                                                                            <TableCell >{item?.comment}</TableCell>
-                                                                            <TableCell >{getDateDifference(item.startDate, item.endDate)}</TableCell>
-                                                                        </TableRow>
-
-                                                                    ))
-                                                                }
-
-                                                            </TableBody>
-
-                                                        </Table>
-
-                                                    </TableCell>
-                                                </TableRow>
-                                            </>
-                                        ))
-                                    ) : (
-                                        <TableRow>
-                                            <TableCell colSpan={8} align="center">
-                                                {subscriptions === null ? 'Loading...' : 'No subscriptions available'}
-                                            </TableCell>
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-
-                            </Table>
-                        </TableContainer>
-                    </Grid>
-
-                    {/* Modal for Editing Subscription */}
-                    <Dialog open={openModal} onClose={handleCloseModal}>
-                        <DialogTitle>Edit Subscription</DialogTitle>
-                        <DialogContent>
-                            <TextField
-                                fullWidth
-                                margin="dense"
-                                name="name"
-                                label="Name"
-                                value={selectedSubscription?.userDetails?.name || ''}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                fullWidth
-                                margin="dense"
-                                name="tradingViewId"
-                                label="TradingView ID"
-                                value={selectedSubscription?.userDetails?.tradingViewID || ''}
-                                onChange={handleInputChange}
-                            />
-                            <FormControl fullWidth margin="dense">
-                                <InputLabel>Plan</InputLabel>
-                                <Select
-                                    name="plan"
-                                    value={selectedSubscription?.plan || ''}
-                                    onChange={handleInputChange}
-                                >
-                                    <MenuItem value="Free Trial">Free Trial</MenuItem>
-                                    <MenuItem value="1 Month">1 Month</MenuItem>
-                                    <MenuItem value="6 Months">6 Months</MenuItem>
-                                    <MenuItem value="1 Year">12 Months</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <TextField
-                                fullWidth
-                                margin="dense"
-                                name="startDate"
-                                label="Start Date"
-                                type="date"
-                                value={selectedSubscription?.startDate
-                                    ? new Date(selectedSubscription.startDate).toISOString().split('T')[0] : ''}
-                                onChange={handleInputChange}
-                                InputLabelProps={{ shrink: true }}
-                            />
-                            <TextField
-                                fullWidth
-                                margin="dense"
-                                name="endDate"
-                                label="End Date"
-                                type="date"
-                                value={selectedSubscription?.endDate
-                                    ? new Date(selectedSubscription.endDate).toISOString().split('T')[0] : ''}
-                                onChange={handleInputChange}
-                                InputLabelProps={{ shrink: true }}
-                            />
-                            <TextField
-                                fullWidth
-                                margin="dense"
-                                name="paymentAmount"
-                                label="Payment Amount (USD/INR)"
-                                type="number"
-                                value={selectedSubscription?.paymentAmount || ''}
-                                onChange={handleInputChange}
-                            />
-                            <FormControl fullWidth margin="dense">
-                                <InputLabel>Access Status</InputLabel>
-                                <Select
-                                    name="accessStatus"
-                                    value={selectedSubscription?.accessStatus || ''}
-                                    onChange={handleInputChange}
-                                >
-                                    <MenuItem value="Granted">Granted</MenuItem>
-                                    <MenuItem value="Pending">Pending</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <FormControl fullWidth margin="dense">
-                                <InputLabel>Payment Mode</InputLabel>
-                                <Select
-                                    name="paymentMode"
-                                    value={selectedSubscription?.paymentMode || ''}
-                                    onChange={handleInputChange}
-                                >
-                                    <MenuItem value="G-Pay">G-Pay</MenuItem>
-                                    <MenuItem value="Bank-Transfer">Bank Transfer</MenuItem>
-                                    <MenuItem value="Online-Purchase">Online Purchase</MenuItem>
-                                    <MenuItem value="Crypto-Transfer">Crypto Transfer</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleCloseModal} color="secondary">
-                                Cancel
-                            </Button>
-                            <Button onClick={handleSaveChanges} variant="contained" color="primary">
-                                Save
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
                 </Grid>
             </Box>
+
+
+            <Grid container spacing={2} style={{padding:'10px 40px', marginTop:'20px'}}>
+                {/* First Table (40% Width) */}
+                <Grid item xs={12} sm={5} md={5} sx={{ margin: '0px' }}>
+                    <Typography variant="h4" gutterBottom align="center">
+                        User Table
+                    </Typography>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ border: '1px solid black' }}>
+                        <TableHead sx={{ backgroundColor: 'rgb(0, 176, 240)', border: '1px solid black' }}>
+                            <TableRow >
+                                <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>S.No</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>User Name</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>Email ID</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>WhatsApp Number</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>TradingView ID</b></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody >
+                            {subscriptions && subscriptions?.length > 0 ? (
+                                subscriptions?.map((sub, index) => (
+                                    <>
+                                        <TableRow key={index} sx={{ border: '1px solid black' }}>
+                                            <TableCell sx={{ border: '1px solid black' }} width="6%">{index + 1}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black' }} width="18%">{sub.userDetails.name}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black' }} width="24%">
+                                                <a href={''} style={{ textDecoration: 'underline' }}>{sub.userDetails.email}</a>
+                                            </TableCell>
+                                            <TableCell sx={{ border: '1px solid black' }} width="18%">{sub.userDetails.whatsAppNumber}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black' }} width="14%">{sub.userDetails.tradingViewID}</TableCell>
+
+                                        </TableRow>
+                                    </>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={8} align="center">
+                                        {subscriptions === null ? 'Loading...' : 'No subscriptions available'}
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+
+                {/* Second Table (60% Width) */}
+                <Grid item xs={12} sm={7} md={7} sx={{ margin: '0px' }}>
+                    <Typography variant="h4" gutterBottom align="center">
+                        Subscription Tracker Table
+                    </Typography>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ border: '1px solid black' }}>
+                        <TableHead sx={{ backgroundColor: 'rgb(0, 176, 240)', border: '1px solid black' }}>
+                            <TableRow >
+                                <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>S.No</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Trading ViewID</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>StartDate</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>EndDate</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Plan</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Payment Mode</b></TableCell>
+                                <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Subscription Status</b></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {subscriptions?.map((sub, index) => (
+                                <TableRow key={index} onClick={() => handleSubRowClick(sub)} sx={{ cursor: 'pointer' }} >
+                                    <TableCell sx={{ border: '1px solid black' }}>{index + 1}</TableCell>
+                                    <TableCell sx={{ border: '1px solid black' }}>{sub.userDetails.tradingViewID}</TableCell>
+                                    <TableCell sx={{ border: '1px solid black' }}>{new Date(sub.startDate).toLocaleDateString()}</TableCell>
+                                    <TableCell sx={{ border: '1px solid black' }}>{format(parseISO(sub.endDate), 'dd-MM-yyyy')}</TableCell>
+                                    <TableCell sx={{ border: '1px solid black' }}>{sub.plan}</TableCell>
+                                    <TableCell sx={{ border: '1px solid black' }}>{sub.paymentMode}</TableCell>
+                                    <TableCell sx={{ border: '1px solid black' }}>{sub.isExpired ? 'Expired' : 'Active'}</TableCell>
+                                </TableRow>
+
+                            ))
+                            }
+                        </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+            </Grid>
+
             <AutoDismissAlert type={isError ? "error" : "success"} message={message} open={showMessage} onClose={handleClose}></AutoDismissAlert>
+
+            {/* Modal for Editing Subscription */}
+            <Dialog open={openModal} onClose={handleCloseModal}>
+                <DialogTitle>Edit Subscription</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        fullWidth
+                        margin="dense"
+                        name="name"
+                        label="Name"
+                        value={selectedSubscription?.userDetails?.name || ''}
+                        onChange={handleInputChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="dense"
+                        name="tradingViewId"
+                        label="TradingView ID"
+                        value={selectedSubscription?.userDetails?.tradingViewID || ''}
+                        onChange={handleInputChange}
+                    />
+                    <FormControl fullWidth margin="dense">
+                        <InputLabel>Plan</InputLabel>
+                        <Select
+                            name="plan"
+                            value={selectedSubscription?.plan || ''}
+                            onChange={handleInputChange}
+                        >
+                            <MenuItem value="Free Trial">Free Trial</MenuItem>
+                            <MenuItem value="1 Month">1 Month</MenuItem>
+                            <MenuItem value="6 Months">6 Months</MenuItem>
+                            <MenuItem value="1 Year">12 Months</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <TextField
+                        fullWidth
+                        margin="dense"
+                        name="startDate"
+                        label="Start Date"
+                        type="date"
+                        value={selectedSubscription?.startDate
+                            ? new Date(selectedSubscription.startDate).toISOString().split('T')[0] : ''}
+                        onChange={handleInputChange}
+                        InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="dense"
+                        name="endDate"
+                        label="End Date"
+                        type="date"
+                        value={selectedSubscription?.endDate
+                            ? new Date(selectedSubscription.endDate).toISOString().split('T')[0] : ''}
+                        onChange={handleInputChange}
+                        InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="dense"
+                        name="paymentAmount"
+                        label="Payment Amount (USD/INR)"
+                        type="number"
+                        value={selectedSubscription?.paymentAmount || ''}
+                        onChange={handleInputChange}
+                    />
+                    <FormControl fullWidth margin="dense">
+                        <InputLabel>Access Status</InputLabel>
+                        <Select
+                            name="accessStatus"
+                            value={selectedSubscription?.accessStatus || ''}
+                            onChange={handleInputChange}
+                        >
+                            <MenuItem value="Granted">Granted</MenuItem>
+                            <MenuItem value="Pending">Pending</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <FormControl fullWidth margin="dense">
+                        <InputLabel>Payment Mode</InputLabel>
+                        <Select
+                            name="paymentMode"
+                            value={selectedSubscription?.paymentMode || ''}
+                            onChange={handleInputChange}
+                        >
+                            <MenuItem value="G-Pay">G-Pay</MenuItem>
+                            <MenuItem value="Bank-Transfer">Bank Transfer</MenuItem>
+                            <MenuItem value="Online-Purchase">Online Purchase</MenuItem>
+                            <MenuItem value="Crypto-Transfer">Crypto Transfer</MenuItem>
+                        </Select>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseModal} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSaveChanges} variant="contained" color="primary">
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };

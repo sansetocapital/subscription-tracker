@@ -42,7 +42,7 @@ module.exports.getAllSubscribers = async (req, res) => {
             }
         ])
         // console.log(subscriptions)
-        res.status(200).json(subscriptions)
+        res.status(200).json(subscriptions);
     } catch (err) {
         console.log(err)
     }
@@ -64,51 +64,8 @@ module.exports.getGroupedSubscriptions = async (req, res) => {
                     preserveNullAndEmptyArrays: true 
                 }
             },
-            {
-                $group: {
-                    _id: '$userId',
-                    name: { $first: '$userDetails.name' },
-                    email: { $first: '$userDetails.email' },
-                    tradingViewID: { $first: '$userDetails.tradingViewID' },
-                    whatsAppNumber: { $first: '$userDetails.whatsAppNumber' },
-                    subscriptions: { $push: '$$ROOT' }, 
-                    
-                }
-            },
-            {
-                $sort: {
-                    name: 1 
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    userId: '$_id',
-                    name: 1,
-                    email: 1,
-                    tradingViewID: 1,
-                    whatsAppNumber: 1,
-                    subscriptions: 1,
-                    active: {
-                        $max: {
-                            $map: {
-                                input: "$subscriptions",
-                                as: "subscription",
-                                in: {
-                                    $gt: [
-                                        { $subtract: ["$$subscription.endDate", "$$subscription.startDate"] },
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    
-                }
-            },
-            
         ]);
-        res.status(200).json(results)
+        res.status(200).json(results);
     } catch (error) {
         console.error("Error fetching grouped subscriptions:", error);
     }
@@ -122,18 +79,25 @@ module.exports.manageSubscription = async (req, res) => {
             { paymentAmount, paymentMode, accessStatus, plan, startDate, endDate },
             { new: true }
         );
+        console.log(new Date(endDate), new Date(), '[]')
+        const isExpired = (new Date(endDate) < new Date())
+        console.log(isExpired, '{isexpired}')
+        const subscription = await Subscription.findById({_id});
+        subscription.isExpired = isExpired;
+        await subscription.save();
         if (!updatedSubscription) {
             return res.status(404).json({ error: 'Subscription not found!' })
         }
         if(accessStatus=="Granted") {
             const statusCode = await emailService.sendEmail(req.body.userDetails.email, process.env.MESSAGE_SENDER, req.body.userDetails.name, plan, startDate, endDate)
+            console.log('statusCode: ', statusCode)
             res.status(statusCode).json({
                 message: statusCode==200 ? 'Success' : 'Invalid',
             })
         }
+        console.log(updatedSubscription)
         res.status(200).json({
             message: 'The user data has been updated!',
-            subscription: updatedSubscription,
         })
     } catch (err) {
         console.error("Error updating subscription and user:", err);
