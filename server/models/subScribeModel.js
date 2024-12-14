@@ -29,7 +29,7 @@ const subscriptionSchema = new mongoose.Schema({
     },
     paymentMode: {
         type: String,
-        enum: ['G-Pay', 'Bank-Transfer', 'Crypto'],
+        enum: ['G-Pay', 'Bank-Transfer', 'Crypto-Transfer', 'Online-Purchase'],
         default: 'Bank-Transfer',
     },
     accessStatus: {
