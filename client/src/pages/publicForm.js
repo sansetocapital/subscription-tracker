@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { TextField, Button, Container, Typography, Grid, Select, MenuItem, InputLabel } from '@mui/material';
 import axios from 'axios';
@@ -6,33 +6,34 @@ import Layout from '../components/layout';
 import AutoDismissAlert from '../components/AutoDismissAlert';
 import { useLocation } from 'react-router-dom';
 import { Axios } from '../constant';
+import { matchIsValidTel, MuiTelInput } from 'mui-tel-input';
+import { Controller, useForm } from "react-hook-form";
 
 const PublicForm = (props) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         tradingViewID: '',
-        whatsAppNumber: '',
         subscriptionID: '',
     });
-    
-    const [message, setMessage] = useState('');
+
     const [isError, setIsError] = useState(false);
     const [showMessage, setShowMessage] = useState(false);
-    const [subscription, setSubscription] = useState('');
+    const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const {role} = props;
+    const { role } = props;
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const { control, handleSubmit } = useForm({
+        defaultValues: {
+            tel: ""
+        }
+    });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         setIsLoading(true);
-    
+
         try {
-            const res = await Axios.post('/api/users', formData);
+            const res = await Axios.post('/api/users', {...formData, whatsAppNumber: data.tel});
             setMessage(res.data.message);
             setIsError(false);
         } catch (err) {
@@ -41,35 +42,25 @@ const PublicForm = (props) => {
                 setIsError(true);
             }
         } finally {
-            setIsLoading(false); // Always reset loading state.
+            setIsLoading(false); 
             setShowMessage(true);
         }
     };
+    const handleChange = useCallback((e) => {
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    }, []);
 
-    const displayMessage = (isError, message) =>{
-        if(isError) {
-            setIsError(true)
-            setMessage(message)
-            setShowMessage(true)
-        }
-        else{
-            setIsError(false)
-            setMessage(message)
-            setShowMessage(true)
-        }
-        setTimeout(()=>{setShowMessage(false)}, 4000);
-    } 
     const handleClose = () => {
-        setShowMessage(false); 
+        setShowMessage(false);
     };
     return (
         <div>
-            <Layout role={role}/>
-            <Container maxWidth="sm" sx={{ mt: 4, mb: 4, boxShadow: 3, p: 3, borderRadius: 2 }}>
+            <Layout role={role} />
+            <Container maxWidth="sm" sx={{ mt: 20, mb: 4, boxShadow: 3, p: 3, borderRadius: 2 }}>
                 <Typography variant="h4" gutterBottom align="center">
                     Subscription Request
                 </Typography>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
@@ -103,13 +94,23 @@ const PublicForm = (props) => {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                label="WhatsApp Number"
-                                name="whatsAppNumber"
-                                fullWidth
-                                value={formData.whatsappNumber}
-                                onChange={handleChange}
-                                required
+                            <Controller
+                                name="tel"
+                                control={control}
+                                rules={{ validate: (value) => matchIsValidTel(value) }}
+                                render={({ field: { ref: fieldRef, value, ...fieldProps }, fieldState }) => (
+                                    <MuiTelInput
+                                        {...fieldProps}
+                                        label="WhatsApp Number"
+                                        defaultCountry='US'
+                                        value={value ?? ''}
+                                        inputRef={fieldRef}
+                                        fullWidth
+                                        helperText={fieldState.invalid ? "Tel is invalid" : ""}
+                                        error={fieldState.invalid}
+                                        required
+                                    />
+                                )}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -136,18 +137,18 @@ const PublicForm = (props) => {
                                 color="primary"
                                 fullWidth
                                 sx={{ height: '60px' }}
-                                disabled={isLoading} // Disable while loading
+                                disabled={isLoading} 
                             >
                                 {isLoading ? "Submitting..." : "Submit"}
                             </Button>
                         </Grid>
-                        
+
                     </Grid>
                 </form>
             </Container>
-            <AutoDismissAlert type={isError? "error":"success"} message = {message} open={showMessage} onClose={handleClose}></AutoDismissAlert>
+            <AutoDismissAlert type={isError ? "error" : "success"} message={message} open={showMessage} onClose={handleClose}></AutoDismissAlert>
         </div>
-        
+
     );
 };
 
