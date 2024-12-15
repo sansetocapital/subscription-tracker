@@ -6,45 +6,27 @@ const jwt = require('jsonwebtoken');
 const emailService = require('../services/emailService');
 require('dotenv').config();
 
-module.exports.getAllSubscribers = async (req, res) => {
+module.exports.getAllUsers = async (req, res) => {
     try {
-        const subscriptions = await Subscription.aggregate([
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'user'
-                },
-            },
-            {
-                $unwind: '$user',
-            },
-            {
-                $project: {
-                    _id: 1, 
-                    paymentAmount: 1,
-                    paymentMode: 1,
-                    accessStatus: 1,
-                    plan: 1,
-                    startDate: 1,
-                    endDate: 1,
-                    user: {
-                        name: 1,
-                        email: 1,
-                        tradingViewID: 1,
-                        whatsAppNumber: 1,
-                    }
-                }
-            },
-            {
-                $sort: { created_at: -1 }
-            }
-        ])
-        // console.log(subscriptions)
-        res.status(200).json(subscriptions);
+        const users = await User.find();
+        res.status(200).json(users);
     } catch (err) {
         console.log(err)
+    }
+}
+
+module.exports.getUserCounts = async (req, res) => {
+    try {
+        const userCounts = await User.countDocuments();
+        const expiredCounts = await Subscription.find({isExpired:true}).countDocuments();
+        console.log(req)
+        res.status(200).json({
+            total: userCounts,
+            expired: expiredCounts,
+            active: userCounts - expiredCounts,
+        })
+    } catch (err) {
+        console.log(err);
     }
 }
 module.exports.getGroupedSubscriptions = async (req, res) => {
