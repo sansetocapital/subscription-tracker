@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { React, useEffect, useState } from "react"
 import {
     Table,
     TableBody,
@@ -21,22 +21,17 @@ import {
     IconButton,
 
 } from '@mui/material';
-import { Alert, Snackbar } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import { Axios } from '../constant';
-import Layout from '../components/layout';
+import { Axios } from "../constant";
+import Admin from "../components/admin";
 import { format, parseISO } from 'date-fns';
-import AutoDismissAlert from '../components/AutoDismissAlert';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import AutoDismissAlert from "../components/AutoDismissAlert";
 
-const AdminPanel = () => {
+const SubscriptionTable = () => {
     const [openModal, setOpenModal] = useState(false);
     const [selectedSubscription, setSelectedSubscription] = useState(null);
     const [subscriptions, setSubscriptions] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [activeCount, setActiveCount] = useState(0);
-    const [expiredCount, setExpiredCount] = useState(0);
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
     const [showMessage, setShowMessage] = useState(false);
@@ -51,9 +46,6 @@ const AdminPanel = () => {
     useEffect(() => {
         getAllSubscription();
     }, [])
-    useEffect(() => {
-        getActiveCount();
-    }, [subscriptions])
 
     const getAllSubscription = () => {
         Axios.get('/api/admin/getAllSubscription').then(res => {
@@ -62,18 +54,6 @@ const AdminPanel = () => {
         });
     }
 
-    const getActiveCount = () => {
-        if (subscriptions && subscriptions.length > 0) {
-            let active = 0;
-            let expired = 0;
-
-            subscriptions.forEach((sub) => {
-                sub.active === true ? active++ : expired++;
-            });
-            setActiveCount(active);
-            setExpiredCount(expired);
-        }
-    }
     const handleSubRowClick = (subscription) => {
         console.log(subscription);
         setSelectedSubscription(subscription);
@@ -144,125 +124,36 @@ const AdminPanel = () => {
     };
     return (
         <>
-            <Layout role='admin' />
-
-            <Box sx={{ width: '100%' }}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Grid item sm={10} md={10} xs={10} sx={{ margin: '20px' }}>
-                        <Typography variant="h4" gutterBottom align="center">
-                            Admin Panel
-                        </Typography>
-                    </Grid>
-                    <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
-                        <Alert
-                            onClose={handleClose}
-                            severity="success"
-                            variant="filled"
-                            sx={{ width: '100%' }}
-                        >
-                            This is a success Alert inside a Snackbar!
-                        </Alert>
-                    </Snackbar>
-
-                    <Grid item sm={10} md={5} xs={10}>
-                        <TableContainer component={Paper} sx={{ border: '1px solid black' }}>
-                            <Table >
-                                <TableBody>
-                                    <TableRow >
-                                        <TableCell sx={{ border: '1px solid black', width: '25%', textAlign: 'center' }}>Total No of Subscribers</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', width: '25%', textAlign: 'center' }}>{activeCount + expiredCount}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', width: '25%', textAlign: 'center' }}></TableCell>
-                                        <TableCell sx={{ border: '1px solid black', width: '25%', textAlign: 'center' }}></TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell sx={{ border: '1px solid black', width: '25%', textAlign: 'center' }}>No of Active Subsribers</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', width: '25%', textAlign: 'center' }}>{activeCount}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', width: '25%', textAlign: 'center' }}>No of Expired Subsribers</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', width: '25%', textAlign: 'center' }}>{expiredCount}</TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
-                </Grid>
-            </Box>
-
-
-            <Grid container spacing={2} style={{ padding: '10px 40px', marginTop: '20px' }}>
-                {/* First Table (40% Width) */}
-                <Grid item xs={12} sm={5} md={5} sx={{ margin: '0px' }}>
-                    <Typography variant="h4" gutterBottom align="center">
-                        User Table
-                    </Typography>
+            <Admin prop='subscriptions'>
+                <Grid item xs={12} sm={9} md={9} sx={{ margin: '50px' }}>
+                    
                     <TableContainer component={Paper}>
                         <Table sx={{ border: '1px solid black' }}>
                             <TableHead sx={{ backgroundColor: 'rgb(0, 176, 240)', border: '1px solid black' }}>
                                 <TableRow >
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>S.No</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>User Name</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>Email ID</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>WhatsApp Number</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '16px' }}><b>TradingView ID</b></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody >
-                                {subscriptions && subscriptions?.length > 0 ? (
-                                    subscriptions?.map((sub, index) => (
-                                        <>
-                                            <TableRow key={index} sx={{ border: '1px solid black' }}>
-                                                <TableCell sx={{ border: '1px solid black' }} width="6%">{index + 1}</TableCell>
-                                                <TableCell sx={{ border: '1px solid black' }} width="18%">{sub.userDetails.name}</TableCell>
-                                                <TableCell sx={{ border: '1px solid black' }} width="24%">
-                                                    <a href={''} style={{ textDecoration: 'underline' }}>{sub.userDetails.email}</a>
-                                                </TableCell>
-                                                <TableCell sx={{ border: '1px solid black' }} width="18%">{sub.userDetails.whatsAppNumber}</TableCell>
-                                                <TableCell sx={{ border: '1px solid black' }} width="14%">{sub.userDetails.tradingViewID}</TableCell>
-
-                                            </TableRow>
-                                        </>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={8} align="center">
-                                            {subscriptions === null ? 'Loading...' : 'No subscriptions available'}
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Grid>
-
-                {/* Second Table (60% Width) */}
-                <Grid item xs={12} sm={7} md={7} sx={{ margin: '0px' }}>
-                    <Typography variant="h4" gutterBottom align="center">
-                        Subscription Tracker Table
-                    </Typography>
-                    <TableContainer component={Paper}>
-                        <Table sx={{ border: '1px solid black' }}>
-                            <TableHead sx={{ backgroundColor: 'rgb(0, 176, 240)', border: '1px solid black' }}>
-                                <TableRow >
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>S.No</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Trading ViewID</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>StartDate</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>EndDate</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Plan</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Payment Mode</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Subscription Status</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px' }}><b>Edit</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>S.No</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Trading View ID</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>StartDate</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>EndDate</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Plan</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Payment Mode</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Subscription Status</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Comments</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Edit</b></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {subscriptions?.map((sub, index) => (
                                     <TableRow key={index}>
-                                        <TableCell sx={{ border: '1px solid black' }}>{index + 1}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black' }}>{sub.userDetails.tradingViewID}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black' }}>{new Date(sub.startDate).toLocaleDateString()}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black' }}>{format(parseISO(sub.endDate), 'dd-MM-yyyy')}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black' }}>{sub.plan}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black' }}>{sub.paymentMode}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black' }}>{sub.isExpired ? 'Expired' : 'Active'}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black' }}>
+                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{index + 1}</TableCell>
+                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{sub.userDetails.tradingViewID}</TableCell>
+                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{new Date(sub.startDate).toLocaleDateString()}</TableCell>
+                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{format(parseISO(sub.endDate), 'dd-MM-yyyy')}</TableCell>
+                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{sub.plan}</TableCell>
+                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{sub.paymentMode}</TableCell>
+                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{sub.isExpired ? 'Expired' : 'Active'}</TableCell>
+                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}></TableCell>
+                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>
                                             <IconButton aria-label='edit' onClick={() => handleSubRowClick(sub)}>
                                                 <EditNoteIcon color='primary' />
                                             </IconButton>
@@ -275,11 +166,10 @@ const AdminPanel = () => {
                         </Table>
                     </TableContainer>
                 </Grid>
-            </Grid>
+            </Admin>
 
             <AutoDismissAlert type={isError ? "error" : "success"} message={message} open={showMessage} onClose={handleClose}></AutoDismissAlert>
 
-            {/* Modal for Editing Subscription */}
             <Dialog open={openModal} onClose={handleCloseModal}>
                 <DialogTitle>Edit Subscription</DialogTitle>
                 <DialogContent>
@@ -402,7 +292,7 @@ const AdminPanel = () => {
                 </DialogActions>
             </Dialog>
         </>
-    );
-};
+    )
+}
 
-export default AdminPanel;
+export default SubscriptionTable;

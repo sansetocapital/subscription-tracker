@@ -26,8 +26,8 @@ const Layout = (props) => {
         else
             navigate('/user/subscription'); 
     };
-    const gotoAdminPanel = () => {
-        navigate('/admin');
+    const gotoTable = (param) => {
+        navigate(`/admin/table/${param}`);
     }
 
     const handleMenuOpen = (event) => {
@@ -60,8 +60,11 @@ const Layout = (props) => {
                     <>
                         {role === 'admin' ? (
                             <>
-                                <Button color="inherit" onClick={gotoAdminPanel}>
-                                    Admin Panel
+                                <Button color="inherit" onClick={() => gotoTable('users')}>
+                                    User Table
+                                </Button>
+                                <Button color="inherit" onClick={() => gotoTable('subscriptions')}>
+                                    Subscription Table
                                 </Button>
                                 <Button color="inherit" onClick={() => gotoSubscriptionPage('admin')}>
                                     Subscription
@@ -90,9 +93,10 @@ const Layout = (props) => {
                     >
                         {role === 'admin' ? (
                             <>
-                                <MenuItem onClick={gotoAdminPanel}>Admin Panel</MenuItem>
+                                <MenuItem onClick={() => gotoTable('users')}>User Table</MenuItem>
+                                <MenuItem onClick={() => gotoTable('subscriptions')}>Subscription Table</MenuItem>
                                 <MenuItem onClick={() => gotoSubscriptionPage('admin')}>
-                                    Subscription
+                                    Subscription 
                                 </MenuItem>
                             </>
                         ) : (
