@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
     AppBar,
     Toolbar,
@@ -8,13 +8,10 @@ import {
     Menu,
     MenuItem,
     useMediaQuery,
-    Box,
-} from '@mui/material'
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { useTheme } from "@mui/material/styles";
-
-
 
 const Layout = (props) => {
     const { role } = props;
@@ -42,7 +39,6 @@ const Layout = (props) => {
     return (
         <AppBar position="static" sx={{ backgroundColor: '#333' }}>
             <Toolbar>
-                {/* Menu Button (useful for mobile views) */}
                 {isMobile && (
                     <IconButton
                         size="large"
@@ -56,8 +52,9 @@ const Layout = (props) => {
                     </IconButton>
                 )}
                 {/* Brand Name or Logo */}
+                <img src='/logo.png' alt="Logo" style={{ height: '40px', marginRight: '16px' }} />
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    SANSETO Subscription Management Portal
+                    Subscription Management Portal
                 </Typography>
                 {!isMobile && (
                     <>

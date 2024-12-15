@@ -17,7 +17,7 @@ const AutoDismissAlert = ({ type, message, open, onClose }) => {
 
 
     return (
-          <Snackbar open={open} autoHideDuration={4000} onClose={onClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} sx={{marginTop:'50px'}} >
+          <Snackbar open={open} autoHideDuration={4000} onClose={onClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} sx={{marginTop:'50px'}} >
             <Alert onClose={onClose} severity={type} size="sm">
                 {message}
             </Alert>
