@@ -5,7 +5,6 @@ module.exports.subScribe = async (req, res) => {
 
     const expiresIn = [7, 30, 210, 395];
     const plans = ['Free Trial', '1 Month', '6 Months', '1 Year'];
-    console.log(req.body, '....viewID')
     try {
         const isActiveUser = await findActiveUsers(req.body.tradingViewID);
 

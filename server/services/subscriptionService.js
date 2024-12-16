@@ -15,7 +15,7 @@ exports.sendExpiryReminders = async () => {
             }, 
             expired: false,
         }).populate('userId');
-        // console.log(expiringSubscriptions, '[][]')
+
         // Send reminders
         // let remindersSent = 0;
         for (const sub of expiringSubscriptions) {

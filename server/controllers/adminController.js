@@ -19,7 +19,6 @@ module.exports.getUserCounts = async (req, res) => {
     try {
         const userCounts = await User.countDocuments();
         const expiredCounts = await Subscription.find({isExpired:true}).countDocuments();
-        console.log(req)
         res.status(200).json({
             total: userCounts,
             expired: expiredCounts,
@@ -61,9 +60,7 @@ module.exports.manageSubscription = async (req, res) => {
             { paymentAmount, paymentMode, accessStatus, plan, startDate, endDate },
             { new: true }
         );
-        console.log(new Date(endDate), new Date(), '[]')
         const isExpired = (new Date(endDate) < new Date())
-        console.log(isExpired, '{isexpired}')
         const subscription = await Subscription.findById({_id});
         subscription.isExpired = isExpired;
         await subscription.save();
@@ -72,7 +69,6 @@ module.exports.manageSubscription = async (req, res) => {
         }
         if(accessStatus=="Granted") {
             const statusCode = await emailService.sendEmail(req.body.userDetails.email, process.env.MESSAGE_SENDER, req.body.userDetails.name, plan, startDate, endDate)
-            console.log('statusCode: ', statusCode)
             res.status(statusCode).json({
                 message: statusCode==200 ? 'Success' : 'Invalid',
             })

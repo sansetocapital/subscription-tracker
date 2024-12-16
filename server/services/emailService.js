@@ -35,7 +35,6 @@ exports.sendEmail = async (to, from, to_name, plan, startDate, endDate, isExpire
         Subscription End Date: [${new Date(endDate)}]
         To ensure continued access to our services, we recommend renewing your subscription. You can easily renew by logging into your account.`
 
-    // console.log(EMAIL_MSG_SUBJECT, '[][]')
     const msg = {
         to: to, 
         from: from, 
@@ -44,20 +43,11 @@ exports.sendEmail = async (to, from, to_name, plan, startDate, endDate, isExpire
         html: "<strong>Welcome</strong>",
     }
     try {
-        // Await the response from sgMail.send
         const response = await sgMail.send(msg);
         
-        // Process the response outside the send function
-        // console.log('Email sent successfully!');
-        // console.log('Status Code:', response[0].statusCode); // Status code
-        // console.log('Headers:', response[0].headers); // Response headers
-        
-        // Log other attributes if required
         const requestId = response[0].headers['x-message-id'];
-        // console.log('Message ID:', requestId); // Log the message ID returned by SendGrid
         return response[0].statusCode
     } catch (error) {
-        // Handle any errors
         console.error('Error sending email:');
         if (error.response) {
             console.error('Status Code:', error.response.status);
