@@ -73,7 +73,6 @@ module.exports.manageSubscription = async (req, res) => {
                 message: statusCode==200 ? 'Success' : 'Invalid',
             })
         }
-        console.log(updatedSubscription)
         res.status(200).json({
             message: 'The user data has been updated!',
         })
