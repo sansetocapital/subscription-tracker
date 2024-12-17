@@ -11,10 +11,9 @@ import {
     Paper,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import axios from 'axios';
-import { Axios } from '../constant';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/layout';
+import { Axios } from '../constant';
 
 
 const LoginPage = () => {
@@ -31,10 +30,10 @@ const LoginPage = () => {
         Axios.post('/api/admin/login', formData).then(res => {
             if (res.data.message === "success") {
                 localStorage.setItem('authToken', res.data.token);
-                navigate('/admin');
+                navigate('/admin/table/users');
             }
         })
-        console.log(formData); // Replace with your login API call
+        console.log(formData); 
     };
 
     return (
