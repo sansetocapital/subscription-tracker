@@ -33,7 +33,6 @@ const LoginPage = () => {
                 navigate('/admin/table/users');
             }
         })
-        console.log(formData); 
     };
 
     return (

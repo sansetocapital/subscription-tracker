@@ -19,7 +19,6 @@ const UserTable = () => {
 
     const getAllUserData = async () => {
         let res = await Axios.get('/api/admin/getAllUsers');
-        console.log(res.data)
         return setUserData(res.data);
     }
 
@@ -61,7 +60,7 @@ const UserTable = () => {
                                 ) : (
                                     <TableRow>
                                         <TableCell colSpan={8} align="center">
-                                            {userData === null ? 'Loading...' : 'No subscriptions available'}
+                                            {userData === null ? <i>Loading...</i> : <b style={{fontSize:'20px'}}>No Users available</b>}
                                         </TableCell>
                                     </TableRow>
                                 )}

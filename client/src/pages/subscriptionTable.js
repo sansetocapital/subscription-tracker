@@ -55,7 +55,6 @@ const SubscriptionTable = () => {
     }
 
     const handleSubRowClick = (subscription) => {
-        console.log(subscription);
         setSelectedSubscription(subscription);
         setOpenModal(true);
     };
@@ -66,7 +65,6 @@ const SubscriptionTable = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        console.log(value * 2, 'value')
         setAmount(value)
         if (currency === "USD") {
             setConvertedAmount((value * currencyRates.USD).toFixed(2));
@@ -83,7 +81,6 @@ const SubscriptionTable = () => {
         const newCurrency = e.target.value;
         setCurrency(newCurrency);
         setAmount()
-        console.log(newCurrency * 2)
 
         if (newCurrency === 'USD') {
             setConvertedAmount((amount / currencyRates.USD).toFixed(2));
@@ -126,41 +123,49 @@ const SubscriptionTable = () => {
         <>
             <Admin prop='subscriptions'>
                 <Grid item xs={12} sm={9} md={9} sx={{ margin: '50px' }}>
-                    
+
                     <TableContainer component={Paper}>
                         <Table sx={{ border: '1px solid black' }}>
                             <TableHead sx={{ backgroundColor: 'rgb(0, 176, 240)', border: '1px solid black' }}>
                                 <TableRow >
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>S.No</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Trading View ID</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>StartDate</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>EndDate</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Plan</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Payment Mode</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Subscription Status</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Comments</b></TableCell>
-                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign:'center' }}><b>Edit</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign: 'center' }}><b>S.No</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign: 'center' }}><b>Trading View ID</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign: 'center' }}><b>StartDate</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign: 'center' }}><b>EndDate</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign: 'center' }}><b>Plan</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign: 'center' }}><b>Payment Mode</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign: 'center' }}><b>Subscription Status</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign: 'center' }}><b>Comments</b></TableCell>
+                                    <TableCell sx={{ border: '1px solid black', fontSize: '20px', textAlign: 'center' }}><b>Edit</b></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {subscriptions?.map((sub, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{index + 1}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{sub.userDetails.tradingViewID}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{new Date(sub.startDate).toLocaleDateString()}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{format(parseISO(sub.endDate), 'dd-MM-yyyy')}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{sub.plan}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{sub.paymentMode}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>{sub.isExpired ? 'Expired' : 'Active'}</TableCell>
-                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}></TableCell>
-                                        <TableCell sx={{ border: '1px solid black', textAlign:'center', fontSize: '20px' }}>
-                                            <IconButton aria-label='edit' onClick={() => handleSubRowClick(sub)}>
-                                                <EditNoteIcon color='primary' />
-                                            </IconButton>
+                                {subscriptions && subscriptions.length > 0 ? (
+                                    subscriptions?.map((sub, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell sx={{ border: '1px solid black', textAlign: 'center', fontSize: '20px' }}>{index + 1}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black', textAlign: 'center', fontSize: '20px' }}>{sub.userDetails.tradingViewID}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black', textAlign: 'center', fontSize: '20px' }}>{new Date(sub.startDate).toLocaleDateString()}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black', textAlign: 'center', fontSize: '20px' }}>{format(parseISO(sub.endDate), 'dd-MM-yyyy')}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black', textAlign: 'center', fontSize: '20px' }}>{sub.plan}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black', textAlign: 'center', fontSize: '20px' }}>{sub.paymentMode}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black', textAlign: 'center', fontSize: '20px' }}>{sub.isExpired ? 'Expired' : 'Active'}</TableCell>
+                                            <TableCell sx={{ border: '1px solid black', textAlign: 'center', fontSize: '20px' }}></TableCell>
+                                            <TableCell sx={{ border: '1px solid black', textAlign: 'center', fontSize: '20px' }}>
+                                                <IconButton aria-label='edit' onClick={() => handleSubRowClick(sub)}>
+                                                    <EditNoteIcon color='primary' />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={8} align="center">
+                                            {subscriptions === null ? <i>Loading...</i> : <b style={{ fontSize: '20px' }}>No subscriptions available</b>}
                                         </TableCell>
                                     </TableRow>
+                                )
 
-                                ))
                                 }
                             </TableBody>
                         </Table>

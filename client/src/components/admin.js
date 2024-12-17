@@ -25,7 +25,6 @@ const Admin = ({ children, prop }) => {
 
     const getActiveCount = async () => {
         let res = await Axios.get('/api/admin/getUserCounts');
-        console.log(res.data);
         return setCounts(res.data);
 
     }
@@ -47,11 +46,11 @@ const Admin = ({ children, prop }) => {
                                         <TableRow >
 
                                             <TableCell sx={{ textAlign: 'center', fontSize: '24px' }}>Total Subscribers</TableCell>
-                                            <TableCell sx={{ textAlign: 'center', fontSize: '30px', color: 'blue', fontWeight: 'bold' }}>{counts?.total || <CircularProgress />}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center', fontSize: '30px', color: 'blue', fontWeight: 'bold' }}>{counts?.total || 0 }</TableCell>
                                             <TableCell sx={{ textAlign: 'center', fontSize: '24px' }}>Active Subsribers</TableCell>
-                                            <TableCell sx={{ textAlign: 'center', fontSize: '30px', color: 'green', fontWeight: 'bold' }}>{counts?.active || 'Loading...'}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center', fontSize: '30px', color: 'green', fontWeight: 'bold' }}>{counts?.active || 0 }</TableCell>
                                             <TableCell sx={{ textAlign: 'center', fontSize: '24px' }}>Expired Subsribers</TableCell>
-                                            <TableCell sx={{ textAlign: 'center', fontSize: '30px', color: 'red', fontWeight: 'bold' }}>{counts?.expired || 'Loading...'}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center', fontSize: '30px', color: 'red', fontWeight: 'bold' }}>{counts?.expired || 0}</TableCell>
                                         </TableRow>
                                     </TableBody>
                                 </Table>
